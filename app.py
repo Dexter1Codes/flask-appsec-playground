@@ -87,11 +87,49 @@ def create_note():
     db.session.commit
     return note.to_dict, 201
 
-@app.route("/notes/mine", methods=[POST])
+@app.route("/notes/mine", methods=["POST"])
 @login_required
 def my_notes():
     notes = Note.query.filter_by(owner_id=current_user.id).all()
     return {"notes": [note.to_dict() for note in notes]}, 200
+
+
+@app.route("/notes/<int:note_id>", methods=["GET"])
+@login_required
+def get_note(note_id):
+    note = Note.query.get(note_id)
+    if note is None:
+        return{"Error": "Note not found"}, 404
+    return note.to_dict(), 200    
+
+@app.route("/notes/<int:note_id>", methods=["PATCH"])
+@login_required
+def update_note(note_id):
+    note = Note.query.get(note_id)
+    if note is None:
+        return {"error": "note not found"}, 404
+
+    data = request.get_json()
+    if "title" in data:
+        note.title = data["title"]
+    if "content" in data:
+        note.content = data["content"]
+
+    db.session.commit()
+    return note.to_dict(), 200
+
+
+@app.route("/notes/<int:note_id>", methods=["DELETE"])
+@login_required
+def delete_note(note_id):
+    note = Note.query.get(note_id)
+    if note is None:
+        return {"error": "note not found"}, 404
+
+    db.session.delete(note)
+    db.session.commit()
+    return {"message": "deleted"}, 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
