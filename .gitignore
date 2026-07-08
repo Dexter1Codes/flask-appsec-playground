@@ -4,3 +4,5 @@ venv/
 .env
 instance/
 cookies.txt
+alice_cookies.txt
+bob_cookies.txt

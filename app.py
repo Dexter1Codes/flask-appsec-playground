@@ -70,7 +70,7 @@ def logout():
 @app.route("/notes", methods=["POST"])
 @login_required
 def create_note():
-    data = request.getJSON()
+    data = request.get_json()
     title = data.get("title")
     content = data.get("content")
 
@@ -78,16 +78,16 @@ def create_note():
         return {"error": "Title Required"}, 400
     
     note  = Note(
-        onwer_id = current_user.id,
+        owner_id = current_user.id,
         title = title,
         content = content,
     )
 
     db.session.add(note)
-    db.session.commit
-    return note.to_dict, 201
+    db.session.commit()
+    return note.to_dict(), 201
 
-@app.route("/notes/mine", methods=["POST"])
+@app.route("/notes/mine", methods=["GET"])
 @login_required
 def my_notes():
     notes = Note.query.filter_by(owner_id=current_user.id).all()
