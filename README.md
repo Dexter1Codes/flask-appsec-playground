@@ -39,7 +39,7 @@ authenticated attacker can read, modify, or delete any user's notes by changing
 the ID in the URL.
 
 Full walkthrough with request/response evidence (read, enumerate, modify,
-delete, and a control test) is in the writeup: [Access Control / IDOR writeup](./writeups/access-control-idor.md)
+delete, and a control test) is in the writeup: [Access Control / IDOR writeup](/Writeups/access-control-idor.md)
 
 ## Remediation
 Ownership is enforced through a single helper function, called at the start of
