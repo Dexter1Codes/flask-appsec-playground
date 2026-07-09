@@ -4,6 +4,7 @@ venv/
 .env
 instance/
 cookies.txt
+victim_live.txt
 victim_cookies.txt
-attacker_cookies.txt
-victim2_cookies.txt
+attacker_live.txt
+victim2_live.txt
