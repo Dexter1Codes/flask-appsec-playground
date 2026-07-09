@@ -25,8 +25,8 @@ Flask, Flask-Login (session auth), Flask-SQLAlchemy, SQLite, Werkzeug (scrypt).
 but never verify note ownership. Explain authn-vs-authz here.)
 
 ## Exploitation Walkthrough
-(Register two users, log in as A, act on B's note by id, show the response.
-Burp screenshots go here.)
+- @login_required makes sure the authentication works fine.
+- But there is no check that what the current user is authorized to access, that is BOLA/IDOR.
 
 ## Remediation
 (Added after the exploit: the ownership check, and why it closes all three routes.)

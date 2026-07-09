@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from extensions import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required,    current_user
@@ -18,6 +18,14 @@ from model import User, Note
 
 with app.app_context():
     db.create_all()
+
+def get_owned_note_or_error(note_id):
+    note = db.session.get(Note, note_id)
+    if note is None:
+        abort(404)
+    if note.owner_id != current_user.id:
+        abort(404)                       # 403 if clients are trusted.
+    return note
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -97,24 +105,18 @@ def my_notes():
 @app.route("/notes/<int:note_id>", methods=["GET"])
 @login_required
 def get_note(note_id):
-    note = Note.query.get(note_id)
-    if note is None:
-        return{"Error": "Note not found"}, 404
+    note = get_owned_note_or_error(note_id)
     return note.to_dict(), 200    
 
 @app.route("/notes/<int:note_id>", methods=["PATCH"])
 @login_required
 def update_note(note_id):
-    note = Note.query.get(note_id)
-    if note is None:
-        return {"error": "note not found"}, 404
-
+    note = get_owned_note_or_error(note_id)
     data = request.get_json()
     if "title" in data:
         note.title = data["title"]
     if "content" in data:
         note.content = data["content"]
-
     db.session.commit()
     return note.to_dict(), 200
 
@@ -122,10 +124,7 @@ def update_note(note_id):
 @app.route("/notes/<int:note_id>", methods=["DELETE"])
 @login_required
 def delete_note(note_id):
-    note = Note.query.get(note_id)
-    if note is None:
-        return {"error": "note not found"}, 404
-
+    note = get_owned_note_or_error(note_id)
     db.session.delete(note)
     db.session.commit()
     return {"message": "deleted"}, 200
