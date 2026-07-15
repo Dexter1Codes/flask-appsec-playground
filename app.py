@@ -95,6 +95,12 @@ def create_note():
     db.session.commit()
     return note.to_dict(), 201
 
+@app.route("/admin/users", methods=["GET"])
+@login_required
+def list_all_users():
+    users = User.query.all()
+    return {"users": [user.to_dict() for user in users]}, 200
+
 @app.route("/notes/mine", methods=["GET"])
 @login_required
 def my_notes():
