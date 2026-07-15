@@ -15,9 +15,28 @@ db.init_app(app)
 login_manager.init_app(app)
 
 from model import User, Note
+def seed_admin():
+    admin_username = os.environ.get("ADMIN_USERNAME")
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+
+    if not admin_password or admin_username:
+        return
+    existing_admin = User.query.filter_by(is_admin = True).first()
+    if existing_admin:
+        return
+    
+    admin = User(
+        username = admin_username,
+        password_hash = generate_password_hash(admin_password),
+        is_admin = True,
+    )
+
+    db.session.add(admin)
+    db.session.commit()
 
 with app.app_context():
     db.create_all()
+    seed_admin()
 
 def get_owned_note_or_error(note_id):
     note = db.session.get(Note, note_id)
