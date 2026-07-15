@@ -3,8 +3,4 @@ __pycache__/
 venv/
 .env
 instance/
-cookies.txt
-victim_live.txt
-victim_cookies.txt
-attacker_live.txt
-victim2_live.txt
+attacker_cookies.txt
