@@ -19,7 +19,7 @@ def seed_admin():
     admin_username = os.environ.get("ADMIN_USERNAME")
     admin_password = os.environ.get("ADMIN_PASSWORD")
 
-    if not admin_password or admin_username:
+    if not admin_password or not admin_username:
         return
     existing_admin = User.query.filter_by(is_admin = True).first()
     if existing_admin:
