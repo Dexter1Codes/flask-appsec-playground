@@ -117,6 +117,8 @@ def create_note():
 @app.route("/admin/users", methods=["GET"])
 @login_required
 def list_all_users():
+    if not current_user.is_admin():
+        abort(403)
     users = User.query.all()
     return {"users": [user.to_dict() for user in users]}, 200
 
